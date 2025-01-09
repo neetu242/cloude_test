@@ -17,10 +17,24 @@ pipeline {
                 }
         }
        
-        stage ('Test'){
-                steps {
-                sh "pytest test_app.py"
+        // stage ('Test'){
+        //         steps {
+        //         sh "pytest test_app.py"
+        //         }
+        // }
+
+        stage('Run Tests in Docker') {
+            steps {
+                script {
+                    // Now run the tests inside the Docker container where pytest is installed
+                    sh '''
+                    docker run --rm \
+                        -v $(pwd):/app \
+                        -w /app \
+                        $registry pytest test_app.py
+                    '''
                 }
+            }
         }
        
         // stage ('Clean Up'){
